@@ -3,6 +3,7 @@ const TelegramBot = require("node-telegram-bot-api");
 const axios = require("axios");
 
 const generateTable = require("./generateTable");
+const calculateTableData = require("./calculateTableData");
 
 const token = process.env.TOKEN;
 
@@ -87,12 +88,96 @@ bot.onText(/\/check_crypto_info/, async (msg) => {
   const chat_id = msg.chat.id;
 
   const data = [
-    { name: "John", age: 25, city: "New York" },
-    { name: "Alice", age: 30, city: "Los Angeles" },
-    { name: "Bob", age: 22, city: "Chicago" },
+    {
+      name: "ETH",
+      price: 2908.6027519856807,
+      bought: 2600,
+    },
+    {
+      name: "BTC",
+      price: 47140.807542529205,
+      bought: 2300,
+    },
+    {
+      name: "SOL",
+      price: 128.51267991775188,
+      bought: 1500,
+    },
+    {
+      name: "DOT",
+      price: 6.443691799212581,
+      bought: 1300,
+    },
+    {
+      name: "AVAX",
+      price: 38.16551109980281,
+      bought: 600,
+    },
+    {
+      name: "XRP",
+      price: 0.5711318795430945,
+      bought: 550,
+    },
+    {
+      name: "LINK",
+      price: 17.649135192375574,
+      bought: 500,
+    },
+    {
+      name: "ADA",
+      price: 0.46860356138706655,
+      bought: 200,
+    },
+    {
+      name: "LRC",
+      price: 0.24813895781637718,
+      bought: 200,
+    },
+    {
+      name: "FLUX",
+      price: 0.7620789513793629,
+      bought: 200,
+    },
+    {
+      name: "BNB",
+      price: 231.4814814814815,
+      bought: 100,
+    },
+    {
+      name: "LTC",
+      price: 68.68131868131869,
+      bought: 100,
+    },
+    {
+      name: "POL",
+      price: 0.7518344761217369,
+      bought: 100,
+    },
+    {
+      name: "SUI",
+      price: 1.2339585389930898,
+      bought: 100,
+    },
+    {
+      name: "NOT",
+      price: 0.019331142470520007,
+      bought: 100,
+    },
+    {
+      name: "KDA",
+      price: 0.5620187714269657,
+      bought: 100,
+    },
+    {
+      name: "TWT",
+      price: 0.8333333333333334,
+      bought: 100,
+    },
   ];
 
-  const table = generateTable(data);
+  const analyticsData = await calculateTableData(data);
+
+  const table = generateTable(analyticsData);
 
   bot.sendMessage(chat_id, table, { parse_mode: "Markdown" });
 });
