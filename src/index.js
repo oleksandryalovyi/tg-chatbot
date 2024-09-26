@@ -2,6 +2,8 @@ require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
 const axios = require("axios");
 
+const generateTable = require("./generateTable");
+
 const token = process.env.TOKEN;
 
 // Created instance of TelegramBot
@@ -78,4 +80,19 @@ bot.onText(/\/check_pln_rate/, async (msg) => {
   console.log("rate", rate);
 
   await bot.sendMessage(chat_id, `PLN rate is ${rate}`);
+});
+
+bot.onText(/\/check_crypto_info/, async (msg) => {
+  console.log("/check_crypto_info");
+  const chat_id = msg.chat.id;
+
+  const data = [
+    { name: "John", age: 25, city: "New York" },
+    { name: "Alice", age: 30, city: "Los Angeles" },
+    { name: "Bob", age: 22, city: "Chicago" },
+  ];
+
+  const table = generateTable(data);
+
+  bot.sendMessage(chat_id, table, { parse_mode: "Markdown" });
 });
