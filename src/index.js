@@ -3,7 +3,7 @@ const TelegramBot = require("node-telegram-bot-api");
 const axios = require("axios");
 
 const generateTable = require("./generateTable");
-const calculateTableData = require("./calculateTableData");
+const Analytics = require("./Analytics");
 
 const token = process.env.TOKEN;
 
@@ -175,9 +175,13 @@ bot.onText(/\/check_crypto_info/, async (msg) => {
     },
   ];
 
-  const analyticsData = await calculateTableData(data);
+  const analytics = new Analytics({ currenciesDataArr: data });
 
-  const table = generateTable(analyticsData);
+  await analytics.calculateTableData();
 
-  bot.sendMessage(chat_id, table, { parse_mode: "Markdown" });
+  const sumTable = generateTable(analytics.sumAnalytics);
+  const currencyTable = generateTable(analytics.currenciesAnalytics);
+
+  bot.sendMessage(chat_id, sumTable, { parse_mode: "Markdown" });
+  bot.sendMessage(chat_id, currencyTable, { parse_mode: "Markdown" });
 });
