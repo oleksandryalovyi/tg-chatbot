@@ -78,7 +78,6 @@ bot.onText(/\/check_pln_rate/, async (msg) => {
   );
 
   const rate = Number(res.data.rate).toFixed(2);
-  console.log("res", res);
   console.log("rate", rate);
 
   await bot.sendMessage(chat_id, `PLN rate is ${rate}`);
