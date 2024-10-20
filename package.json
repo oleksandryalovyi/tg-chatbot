@@ -1,6 +1,7 @@
 {
   "scripts": {
     "start": "node src/index.js",
+    "start:background": "nohup npm run start > output.log 2>&1 &",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
