@@ -43,59 +43,70 @@ bot.onText(/\/check_air/, async (msg) => {
   console.log("/check_air");
   const chat_id = msg.chat.id;
 
-  const res = await axios.get(
-    `https://api.waqi.info/feed/geo:50.0438719;19.9907768/?token=${process.env.WAQI_TOKEN}`
-  );
+  try {
+    const res = await axios.get(
+      `https://api.waqi.info/feed/geo:50.0438719;19.9907768/?token=${process.env.WAQI_TOKEN}`
+    );
 
-  const aqicnRes = res.data;
-  const aqicnInd = aqicnRes.data.aqi;
-  const forecastAqicnPm25 = aqicnRes.data.forecast.daily.pm25[0].avg;
+    const aqicnRes = res.data;
+    const aqicnInd = aqicnRes.data.aqi;
+    const forecastAqicnPm25 = aqicnRes.data.forecast.daily.pm25[0].avg;
 
-  console.log("aqicnAqi", aqicnInd);
-  console.log("forecastAqicnPm25", forecastAqicnPm25);
+    console.log("aqicnAqi", aqicnInd);
+    console.log("forecastAqicnPm25", forecastAqicnPm25);
 
-  const openWeatherRes = await axios.get(
-    `http://api.openweathermap.org/data/2.5/air_pollution?lat=50.0438719&lon=19.9907768&appid=${process.env.OPENWEATHER_TOKEN}`
-  );
-  const openWeatherInd = openWeatherRes.data.list[0].main.aqi;
-  console.log("openWeatherInd", openWeatherInd);
+    const openWeatherRes = await axios.get(
+      `http://api.openweathermap.org/data/2.5/air_pollution?lat=50.0438719&lon=19.9907768&appid=${process.env.OPENWEATHER_TOKEN}`
+    );
+    const openWeatherInd = openWeatherRes.data.list[0].main.aqi;
+    console.log("openWeatherInd", openWeatherInd);
 
-  await bot.sendMessage(
-    chat_id,
-    `Air quality index by aqicn ${aqicnRes.data.aqi}\n` +
-      `Rest data: pm25 ${aqicnRes.data.iaqi.pm25.v}, pm10 ${aqicnRes.data.iaqi.pm10.v}\n` +
-      `Forecast daily pm25: ${forecastAqicnPm25}\n` +
-      `Open weather index: ${openWeatherInd}`
-  );
+    await bot.sendMessage(
+      chat_id,
+      `Air quality index by aqicn ${aqicnRes.data.aqi}\n` +
+        `Rest data: pm25 ${aqicnRes.data.iaqi.pm25.v}, pm10 ${aqicnRes.data.iaqi.pm10.v}\n` +
+        `Forecast daily pm25: ${forecastAqicnPm25}\n` +
+        `Open weather index: ${openWeatherInd}`
+    );
+  } catch (e) {
+    await bot.sendMessage(chat_id, `Something went wrong, ${e}`);
+  }
 });
 
 bot.onText(/\/check_pln_rate/, async (msg) => {
   console.log("/check_pln_rate");
   const chat_id = msg.chat.id;
 
-  const res = await axios.get(
-    `https://rest.coinapi.io/v1/exchangerate/USD/PLN?apikey=${process.env.COINAPI_TOKEN}`
-  );
+  try {
+    const res = await axios.get(
+      `https://rest.coinapi.io/v1/exchangerate/USD/PLN?apikey=${process.env.COINAPI_TOKEN}`
+    );
+    const rate = Number(res.data.rate).toFixed(2);
+    console.log("rate", rate);
 
-  const rate = Number(res.data.rate).toFixed(2);
-  console.log("rate", rate);
-
-  await bot.sendMessage(chat_id, `PLN rate is ${rate}`);
+    await bot.sendMessage(chat_id, `PLN rate is ${rate}`);
+  } catch (e) {
+    await bot.sendMessage(chat_id, `Something went wrong, ${e}`);
+  }
 });
 
 bot.onText(/\/check_crypto_info/, async (msg) => {
   console.log("/check_crypto_info");
   const chat_id = msg.chat.id;
 
-  const data = await fetchS3Json("data.json");
+  try {
+    const data = await fetchS3Json("data.json");
 
-  const analytics = new Analytics({ currenciesDataArr: data });
+    const analytics = new Analytics({ currenciesDataArr: data });
 
-  await analytics.calculateTableData();
+    await analytics.calculateTableData();
 
-  const sumTable = generateTable(analytics.sumAnalytics);
-  const currencyTable = generateTable(analytics.currenciesAnalytics);
+    const sumTable = generateTable(analytics.sumAnalytics);
+    const currencyTable = generateTable(analytics.currenciesAnalytics);
 
-  bot.sendMessage(chat_id, sumTable, { parse_mode: "Markdown" });
-  bot.sendMessage(chat_id, currencyTable, { parse_mode: "Markdown" });
+    bot.sendMessage(chat_id, sumTable, { parse_mode: "Markdown" });
+    bot.sendMessage(chat_id, currencyTable, { parse_mode: "Markdown" });
+  } catch (e) {
+    await bot.sendMessage(chat_id, `Something went wrong, ${e}`);
+  }
 });
