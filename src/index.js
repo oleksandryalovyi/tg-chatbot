@@ -107,6 +107,7 @@ bot.onText(/\/check_crypto_info/, async (msg) => {
     bot.sendMessage(chat_id, sumTable, { parse_mode: "Markdown" });
     bot.sendMessage(chat_id, currencyTable, { parse_mode: "Markdown" });
   } catch (e) {
+    console.error("error", e);
     await bot.sendMessage(chat_id, `Something went wrong, ${e}`);
   }
 });
