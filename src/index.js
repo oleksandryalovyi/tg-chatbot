@@ -4,7 +4,7 @@ const axios = require("axios");
 
 const generateTable = require("./generateTable");
 const Analytics = require("./Analytics");
-const fetchS3Json = require("./fetchS3Json");
+const S3 = require("./S3");
 
 const token = process.env.TOKEN;
 
@@ -95,7 +95,7 @@ bot.onText(/\/check_crypto_info/, async (msg) => {
   const chat_id = msg.chat.id;
 
   try {
-    const data = await fetchS3Json(
+    const data = await S3.FetchS3Json(
       process.env.S3_CRYPTO_BUCKET,
       process.env.S3_CRYPTO_FILE_NAME
     );

@@ -1,21 +1,17 @@
-// Генеруємо HTML таблицю зі стилями
 function generateTable(data) {
-  const colWidths = 10; // Задаємо фіксовану ширину для кожної колонки
-  let markdown = "```\n"; // Відкриваємо блок коду для використання моноширинного шрифту
+  const colWidths = 10;
+  let markdown = "```\n";
 
-  // Заголовки таблиці
   Object.keys(data[0]).forEach((header, i) => {
     markdown += header.padEnd(colWidths) + " ";
   });
   markdown += "\n";
 
-  // Роздільники
   Object.keys(data[0]).forEach((width) => {
     markdown += "-".repeat(width) + " ";
   });
   markdown += "\n";
 
-  // Рядки таблиці
   data.forEach((row) => {
     Object.values(row).forEach((value, i) => {
       markdown += String(value).padEnd(colWidths) + " ";
@@ -23,7 +19,7 @@ function generateTable(data) {
     markdown += "\n";
   });
 
-  markdown += "```"; // Закриваємо блок коду
+  markdown += "```";
   return markdown;
 }
 
