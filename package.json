@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "start:background": "nohup npm run start > output.log 2>&1 &",
+    "start:prod": "pm2 start src/index.js --name=bot",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky"
   },
