@@ -19,14 +19,17 @@ jobs:
           node-version: 20
 
       - name: Deploy to EC2
-        uses: appleboy/ssh-action@v0.1.3
-        with:
-          host: ${{ secrets.AWS_EC2_HOST }}
-          username: ${{ secrets.AWS_EC2_USER }}
-          key: ${{ secrets.AWS_EC2_KEY }}
-          port: 22
-          script: |
+        env:
+          EC2_HOST: ${{ secrets.AWS_EC2_HOST }}
+          EC2_USER: ${{ secrets.AWS_EC2_USER }}
+          EC2_KEY: ${{ secrets.AWS_EC2_KEY }}
+        run: |
+          echo "${EC2_KEY}" > ec2_key.pem
+          chmod 600 ec2_key.pem
+          ssh -o StrictHostKeyChecking=no -i ec2_key.pem $EC2_USER@$EC2_HOST << EOF
             cd /tg-chatbot
             git pull origin main
             npm install
-            npm run start:prod
+            pm2 reload all
+          EOF
+          rm ec2_key.pem
