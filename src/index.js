@@ -1,10 +1,10 @@
-require("dotenv").config();
-const TelegramBot = require("node-telegram-bot-api");
-const axios = require("axios");
+(await import("dotenv")).config();
+import TelegramBot from "node-telegram-bot-api";
+import axios from "axios";
 
-const generateTable = require("./generateTable");
-const Analytics = require("./Analytics");
-const S3 = require("./S3");
+import Table from "./Table.js";
+import Analytics from "./Analytics.js";
+import S3 from "./S3.js";
 
 const token = process.env.TOKEN;
 
@@ -108,8 +108,8 @@ bot.onText(/\/check_crypto_info/, async (msg) => {
     const { sumAnalytics, currenciesAnalytics } =
       await analytics.calculateTableData();
 
-    const sumTable = generateTable(sumAnalytics);
-    const currencyTable = generateTable(currenciesAnalytics);
+    const sumTable = Table.GenerateMarkdownTable(sumAnalytics);
+    const currencyTable = Table.GenerateMarkdownTable(currenciesAnalytics);
 
     bot.sendMessage(chat_id, sumTable, { parse_mode: "Markdown" });
     bot.sendMessage(chat_id, currencyTable, { parse_mode: "Markdown" });

@@ -1,4 +1,4 @@
-const axios = require("axios");
+import axios from "axios";
 
 class Analytics {
   constructor({ currenciesDataArr, usdtSaved }) {
@@ -122,4 +122,4 @@ class Analytics {
   }
 }
 
-module.exports = Analytics;
+export default Analytics;

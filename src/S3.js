@@ -1,4 +1,4 @@
-const AWS = require("aws-sdk");
+import AWS from "aws-sdk";
 
 class S3 {
   static async FetchS3Json(bucketName, filename) {
@@ -19,4 +19,4 @@ class S3 {
   }
 }
 
-module.exports = fetchS3Json;
+export default S3;
