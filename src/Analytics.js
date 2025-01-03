@@ -1,19 +1,28 @@
 const axios = require("axios");
 
 class Analytics {
-  constructor(props) {
-    this.currenciesDataArr = props.currenciesDataArr;
+  constructor({ currenciesDataArr, usdtSaved }) {
+    this.currenciesDataArr = currenciesDataArr;
+    this.usdtSaved = usdtSaved;
+    this.pricesObject = {};
+
     this.sumAnalytics = [];
     this.currenciesAnalytics = [];
-    this.pricesObject = {};
   }
 
   async calculateTableData() {
     const currenciesNamesArr = this._getNames(this.currenciesDataArr);
 
     this.pricesObject = await this._getPricesObject(currenciesNamesArr);
+
     this.currenciesAnalytics = this._getCurrencyAnalytics();
+
     this.sumAnalytics = this._getSumAnalytics();
+
+    return {
+      sumAnalytics: this.sumAnalytics,
+      currenciesAnalytics: this.currenciesAnalytics,
+    };
   }
 
   _getNames(array) {
@@ -35,13 +44,16 @@ class Analytics {
 
   _getSumAnalytics() {
     const initSum = this.currenciesDataArr.reduce(
-      (acc, item) => acc + item.bought,
+      (acc, item) => acc + item.invested,
       0
     );
-    const actualSum = this.currenciesAnalytics.reduce(
-      (acc, item) => acc + Number(item["diff, $"]),
-      initSum
-    );
+
+    const actualSum =
+      this.currenciesAnalytics.reduce(
+        (acc, item) => acc + Number(item["diff, $"]),
+        initSum
+      ) + this.usdtSaved;
+
     const diffAbsolute = actualSum - initSum;
     const { differenceStr: diffPercent } = this._getPercentDifference(
       initSum,
@@ -63,8 +75,8 @@ class Analytics {
 
     for (let i = 0; i < this.currenciesDataArr.length; i++) {
       const currentItem = this.currenciesDataArr[i];
-      const oldPrice = Number(currentItem.price);
-      const moneyAmount = Number(currentItem.bought);
+      const oldPrice = Number(currentItem.avr_price);
+      const moneyAmount = Number(currentItem.invested);
 
       const newPrice = this.pricesObject[currentItem.name];
 

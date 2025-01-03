@@ -1,13 +1,11 @@
-// Імпортуємо AWS SDK
 const AWS = require("aws-sdk");
 
-async function fetchS3Json(filename) {
+async function fetchS3Json(bucketName, filename) {
   const s3 = new AWS.S3();
 
-  // Параметри запиту до S3
   const params = {
-    Bucket: "alexyalovyi-crypto-bucket", // Ім'я вашого бакету
-    Key: filename, // Шлях до JSON файлу
+    Bucket: bucketName,
+    Key: filename,
   };
 
   try {

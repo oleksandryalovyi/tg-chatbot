@@ -91,18 +91,25 @@ bot.onText(/\/check_pln_rate/, async (msg) => {
 });
 
 bot.onText(/\/check_crypto_info/, async (msg) => {
-  console.log("/check_crypto_info");
+  console.log("/check_crypto_info", new Date());
   const chat_id = msg.chat.id;
 
   try {
-    const data = await fetchS3Json("data.json");
+    const data = await fetchS3Json(
+      process.env.S3_CRYPTO_BUCKET,
+      process.env.S3_CRYPTO_FILE_NAME
+    );
 
-    const analytics = new Analytics({ currenciesDataArr: data });
+    const analytics = new Analytics({
+      currenciesDataArr: data.currencies,
+      usdtSaved: data.usdtSaved,
+    });
 
-    await analytics.calculateTableData();
+    const { sumAnalytics, currenciesAnalytics } =
+      await analytics.calculateTableData();
 
-    const sumTable = generateTable(analytics.sumAnalytics);
-    const currencyTable = generateTable(analytics.currenciesAnalytics);
+    const sumTable = generateTable(sumAnalytics);
+    const currencyTable = generateTable(currenciesAnalytics);
 
     bot.sendMessage(chat_id, sumTable, { parse_mode: "Markdown" });
     bot.sendMessage(chat_id, currencyTable, { parse_mode: "Markdown" });
